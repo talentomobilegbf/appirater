@@ -1,0 +1,29 @@
+{
+  "": {
+    "swift-dependencies": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/master.swiftdeps"
+  },
+  "/Users/miguelmonzon/git/Appirater/Sources/Appirater/Classes/Appirater.swift": {
+    "dependencies": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/Appirater.d",
+    "object": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/Appirater.swift.o",
+    "swiftmodule": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/Appirater~partial.swiftmodule",
+    "swift-dependencies": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/Appirater.swiftdeps"
+  },
+  "/Users/miguelmonzon/git/Appirater/Sources/Appirater/Classes/AppiraterDelegate.swift": {
+    "dependencies": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/AppiraterDelegate.d",
+    "object": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/AppiraterDelegate.swift.o",
+    "swiftmodule": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/AppiraterDelegate~partial.swiftmodule",
+    "swift-dependencies": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/AppiraterDelegate.swiftdeps"
+  },
+  "/Users/miguelmonzon/git/Appirater/Sources/Appirater/Classes/Reachability.swift": {
+    "dependencies": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/Reachability.d",
+    "object": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/Reachability.swift.o",
+    "swiftmodule": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/Reachability~partial.swiftmodule",
+    "swift-dependencies": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/Reachability.swiftdeps"
+  },
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/DerivedSources/resource_bundle_accessor.swift": {
+    "dependencies": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/resource_bundle_accessor.d",
+    "object": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/resource_bundle_accessor.swift.o",
+    "swiftmodule": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/resource_bundle_accessor~partial.swiftmodule",
+    "swift-dependencies": "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/resource_bundle_accessor.swiftdeps"
+  }
+}

@@ -1,0 +1,283 @@
+client:
+  name: basic
+tools: {}
+targets:
+  "Appirater-debug.module": ["<Appirater-debug.module>"]
+  "AppiraterPackageTests-debug.test": ["<AppiraterPackageTests-debug.test>"]
+  "PackageStructure": ["<PackageStructure>"]
+  "appiraterTests-debug.module": ["<appiraterTests-debug.module>"]
+  "main": ["<Appirater-debug.module>"]
+  "test": ["<Appirater-debug.module>","<AppiraterPackageTests-debug.test>","<appiraterTests-debug.module>"]
+default: "main"
+nodes:
+  "/Users/miguelmonzon/git/Appirater/Sources/Appirater/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+  "/Users/miguelmonzon/git/Appirater/Tests/appiraterTests/":
+    is-directory-structure: true
+    content-exclusion-patterns: [".git",".build"]
+commands:
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/Info.plist":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Info.plist"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/Info.plist"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Info.plist"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ar.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/ar.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ar.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/ar.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ca.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/ca.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ca.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/ca.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/cs.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/cs.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/cs.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/cs.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/da.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/da.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/da.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/da.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/de.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/de.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/de.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/de.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/el.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/el.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/el.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/el.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/en.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/en.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/en.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/en.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/es.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/es.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/es.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/es.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/fi.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/fi.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/fi.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/fi.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/fr.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/fr.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/fr.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/fr.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/he.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/he.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/he.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/he.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/hu.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/hu.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/hu.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/hu.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/id.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/id.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/id.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/id.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/it.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/it.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/it.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/it.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ja.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/ja.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ja.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/ja.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ko.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/ko.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ko.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/ko.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ms.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/ms.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ms.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/ms.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/nb.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/nb.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/nb.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/nb.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/nl.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/nl.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/nl.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/nl.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/pl.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/pl.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/pl.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/pl.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/pt-br.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/pt-BR.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/pt-br.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/pt-BR.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/pt.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/pt.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/pt.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/pt.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ro.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/ro.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ro.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/ro.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ru.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/ru.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ru.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/ru.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/sk.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/sk.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/sk.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/sk.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/sv.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/sv.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/sv.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/sv.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/th.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/th.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/th.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/th.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/tr.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/tr.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/tr.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/tr.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/uk.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/uk.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/uk.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/uk.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/vi.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/vi.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/vi.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/vi.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/zh-hans.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/zh-Hans.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/zh-hans.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/zh-Hans.lproj/AppiraterLocalizable.strings"
+
+  "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/zh-hant.lproj/AppiraterLocalizable.strings":
+    tool: copy-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/zh-Hant.lproj/AppiraterLocalizable.strings"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/zh-hant.lproj/AppiraterLocalizable.strings"]
+    description: "Copying /Users/miguelmonzon/git/Appirater/Sources/Appirater/Assets/zh-Hant.lproj/AppiraterLocalizable.strings"
+
+  "<Appirater-debug.module>":
+    tool: phony
+    inputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/Appirater.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/AppiraterDelegate.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/Reachability.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/resource_bundle_accessor.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.swiftmodule"]
+    outputs: ["<Appirater-debug.module>"]
+
+  "<AppiraterPackageTests-debug.test>":
+    tool: phony
+    inputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/AppiraterPackageTests.xctest/Contents/MacOS/AppiraterPackageTests"]
+    outputs: ["<AppiraterPackageTests-debug.test>"]
+
+  "<appiraterTests-debug.module>":
+    tool: phony
+    inputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/appiraterTests.build/appiraterTests.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/appiraterTests.swiftmodule"]
+    outputs: ["<appiraterTests-debug.module>"]
+
+  "Appirater-debug.module-resources":
+    tool: phony
+    inputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/pt.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/es.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/fi.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ca.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ru.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/fr.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/it.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/zh-hant.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ar.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/uk.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/th.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/nl.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/pl.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/en.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/sv.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/tr.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/de.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ja.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/sk.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ro.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/zh-hans.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/el.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/da.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/pt-br.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ms.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/vi.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/he.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/id.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/ko.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/cs.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/nb.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/hu.lproj/AppiraterLocalizable.strings","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater_Appirater.bundle/Info.plist"]
+    outputs: ["<Appirater-debug.module-resources>"]
+
+  "C.Appirater-debug.module":
+    tool: swift-compiler
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Classes/Appirater.swift","/Users/miguelmonzon/git/Appirater/Sources/Appirater/Classes/AppiraterDelegate.swift","/Users/miguelmonzon/git/Appirater/Sources/Appirater/Classes/Reachability.swift","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/DerivedSources/resource_bundle_accessor.swift","<Appirater-debug.module-resources>"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/Appirater.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/AppiraterDelegate.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/Reachability.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/resource_bundle_accessor.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.swiftmodule"]
+    executable: "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    module-name: "Appirater"
+    module-output-path: "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.swiftmodule"
+    import-paths: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug"]
+    temps-path: "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build"
+    objects: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/Appirater.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/AppiraterDelegate.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/Reachability.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/resource_bundle_accessor.swift.o"]
+    other-args: ["-target","x86_64-apple-macosx10.13","-swift-version","5","-enable-batch-mode","-index-store-path","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/index/store","-Onone","-enable-testing","-g","-j8","-DSWIFT_PACKAGE","-DDEBUG","-module-cache-path","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/ModuleCache","-parseable-output","-parse-as-library","-emit-objc-header","-emit-objc-header-path","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Appirater-Swift.h","-color-diagnostics","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-fPIC","-package-name","appirater"]
+    sources: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/Classes/Appirater.swift","/Users/miguelmonzon/git/Appirater/Sources/Appirater/Classes/AppiraterDelegate.swift","/Users/miguelmonzon/git/Appirater/Sources/Appirater/Classes/Reachability.swift","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/DerivedSources/resource_bundle_accessor.swift"]
+    is-library: true
+    enable-whole-module-optimization: false
+    num-threads: 8
+
+  "C.AppiraterPackageTests-debug.test":
+    tool: shell
+    inputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/Appirater.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/AppiraterDelegate.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Classes/Reachability.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/resource_bundle_accessor.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/appiraterTests.build/appiraterTests.swift.o"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/AppiraterPackageTests.xctest/Contents/MacOS/AppiraterPackageTests"]
+    description: "Linking ./.build/x86_64-apple-macosx/debug/AppiraterPackageTests.xctest/Contents/MacOS/AppiraterPackageTests"
+    args: ["/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc","-L","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug","-o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/AppiraterPackageTests.xctest/Contents/MacOS/AppiraterPackageTests","-module-name","AppiraterPackageTests","-Xlinker","-bundle","-Xlinker","-rpath","-Xlinker","@loader_path/../../../","@/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/AppiraterPackageTests.product/Objects.LinkFileList","-Xlinker","-rpath","-Xlinker","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.5/macosx","-target","x86_64-apple-macosx13.0","-Xlinker","-add_ast_path","-Xlinker","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.swiftmodule","-Xlinker","-add_ast_path","-Xlinker","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/appiraterTests.swiftmodule","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib"]
+
+  "C.appiraterTests-debug.module":
+    tool: swift-compiler
+    inputs: ["/Users/miguelmonzon/git/Appirater/Tests/appiraterTests/appiraterTests.swift","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.swiftmodule"]
+    outputs: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/appiraterTests.build/appiraterTests.swift.o","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/appiraterTests.swiftmodule"]
+    executable: "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    module-name: "appiraterTests"
+    module-output-path: "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/appiraterTests.swiftmodule"
+    import-paths: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug"]
+    temps-path: "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/appiraterTests.build"
+    objects: ["/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/appiraterTests.build/appiraterTests.swift.o"]
+    other-args: ["-target","x86_64-apple-macosx13.0","-swift-version","5","-enable-batch-mode","-index-store-path","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/index/store","-Onone","-enable-testing","-g","-j8","-DSWIFT_PACKAGE","-DDEBUG","-module-cache-path","/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/ModuleCache","-parseable-output","-parse-as-library","-color-diagnostics","-sdk","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk","-F","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-I","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-L","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib","-Xcc","-isysroot","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk","-Xcc","-F","-Xcc","/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks","-Xcc","-fPIC","-package-name","appirater"]
+    sources: ["/Users/miguelmonzon/git/Appirater/Tests/appiraterTests/appiraterTests.swift"]
+    is-library: true
+    enable-whole-module-optimization: false
+    num-threads: 8
+
+  "PackageStructure":
+    tool: package-structure-tool
+    inputs: ["/Users/miguelmonzon/git/Appirater/Sources/Appirater/","/Users/miguelmonzon/git/Appirater/Tests/appiraterTests/","/Users/miguelmonzon/git/Appirater/Package.swift","/Users/miguelmonzon/git/Appirater/Package.resolved"]
+    outputs: ["<PackageStructure>"]
+    description: "Planning build"
+    allow-missing-inputs: true
+

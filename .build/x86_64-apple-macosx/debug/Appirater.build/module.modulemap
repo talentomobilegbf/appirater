@@ -1,0 +1,4 @@
+module Appirater {
+    header "/Users/miguelmonzon/git/Appirater/.build/x86_64-apple-macosx/debug/Appirater.build/Appirater-Swift.h"
+    requires objc
+}
