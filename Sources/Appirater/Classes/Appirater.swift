@@ -1,13 +1,25 @@
 //
-//  Appirater.swift
-//  Pods
+//  Popover.swift
+//  Polytime
 //
-//  Created by Zhou Hao on 09/12/16.
-//
+//  Created by gavin on 2021/12/19.
+//  Copyright © 2021 cn.kroknow. All rights reserved.
 //
 
 import Foundation
-import StoreKit
+import UIKit
+import SystemConfiguration
+import Reachability
+
+@objc public protocol AppiraterDelegate {
+    func appiraterShouldDisplayAlert(_ irater:Appirater) -> Bool
+    func appiraterDidDisplayAlert(_ irater:Appirater)
+    func appiraterDidDeclineToRate(_ irater:Appirater)
+    func appiraterDidOptToRate(_ irater:Appirater)
+    func appiraterDidOptToRemindLater(_ irater:Appirater)
+    func appiraterWillPresentModalView(_ irater:Appirater, animated:Bool)
+    func appiraterDidDismissModalView(_ irater:Appirater, animated:Bool)
+}
 
 let kAppiraterFirstUseDate = "kAppiraterFirstUseDate"
 let kAppiraterUseCount = "kAppiraterUseCount"
@@ -15,810 +27,490 @@ let kAppiraterSignificantEventCount = "kAppiraterSignificantEventCount"
 let kAppiraterCurrentVersion = "kAppiraterCurrentVersion"
 let kAppiraterRatedCurrentVersion = "kAppiraterRatedCurrentVersion"
 let kAppiraterDeclinedToRate = "kAppiraterDeclinedToRate"
-let kAppiraterReminderRequestDate = "kAppiraterReminderRequestDate"
+let kAppiraterReminderRequestDate = "kAppiraterReminderRequestDate";
 
-var templateReviewURL = "itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=APP_ID"
-var templateReviewURLiOS7 = "itms-apps://itunes.apple.com/app/idAPP_ID"
-var templateReviewURLiOS8 = "itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=APP_ID&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"
+public class Appirater : NSObject {
+    
+    
+    /*!
+     Your localized app's name.
+     */
+    lazy var APPIRATER_LOCALIZED_APP_NAME = Bundle.main.localizedInfoDictionary?["CFBundleDisplayName"] as? String
 
-/*!
- Your localized app's name.
- */
-let APPIRATER_LOCALIZED_APP_NAME = Bundle.main.infoDictionary?[kCFBundleNameKey as String] as? String
+    /*!
+     Your app's name.
+     */
+    lazy var APPIRATER_APP_NAME = APPIRATER_LOCALIZED_APP_NAME ?? (Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String) ?? (Bundle.main.infoDictionary!["CFBundleName"] as! String)
 
-/*!
- Your app's name.
- */
-let APPIRATER_APP_NAME = APPIRATER_LOCALIZED_APP_NAME ?? (Bundle.main.infoDictionary!["CFBundleDisplayName"] as! String) ?? (Bundle.main.infoDictionary!["CFBundleName"] as! String)
+    /*!
+     This is the message your users will see once they've passed the day+launches
+     threshold.
+     */
 
-/*!
- This is the message your users will see once they've passed the day+launches
- threshold.
- */
-let APPIRATER_LOCALIZED_MESSAGE = NSLocalizedString("If you enjoy using %@, would you mind taking a moment to rate it? It won't take more than a minute. Thanks for your support!", tableName: "AppiraterLocalizable", bundle: Appirater.bundle(),comment:"")
+    lazy var APPIRATER_LOCALIZED_MESSAGE = NSLocalizedString("If you enjoy using %@, would you mind taking a moment to rate it? It won't take more than a minute. Thanks for your support!", tableName:"AppiraterLocalizable", bundle:Appirater.instance.bundle, comment: "")
 
-let APPIRATER_MESSAGE = String(format: APPIRATER_LOCALIZED_MESSAGE, APPIRATER_APP_NAME)
+    lazy var APPIRATER_MESSAGE = String(format: APPIRATER_LOCALIZED_MESSAGE, APPIRATER_APP_NAME)
 
-/*!
- This is the title of the message alert that users will see.
- */
-let APPIRATER_LOCALIZED_MESSAGE_TITLE = NSLocalizedString("Rate %@", tableName:"AppiraterLocalizable", bundle:Appirater.bundle(), comment:"")
+    /*!
+     This is the title of the message alert that users will see.
+     */
+    lazy var APPIRATER_LOCALIZED_MESSAGE_TITLE = NSLocalizedString("Rate %@", tableName:"AppiraterLocalizable", bundle:Appirater.instance.bundle, comment: "")
 
-let APPIRATER_MESSAGE_TITLE = String(format: APPIRATER_LOCALIZED_MESSAGE_TITLE, APPIRATER_APP_NAME)
+    lazy var APPIRATER_MESSAGE_TITLE =  String(format: APPIRATER_LOCALIZED_MESSAGE_TITLE, APPIRATER_APP_NAME)
 
-/*!
- The text of the button that rejects reviewing the app.
- */
-let APPIRATER_CANCEL_BUTTON = NSLocalizedString("No, Thanks", tableName:"AppiraterLocalizable", bundle:Appirater.bundle(), comment:"")
+    /*!
+     The text of the button that rejects reviewing the app.
+     */
+    lazy var APPIRATER_CANCEL_BUTTON = NSLocalizedString("No, Thanks", tableName:"AppiraterLocalizable", bundle:Appirater.instance.bundle, comment: "")
+    /*!
+     Text of button that will send user to app review page.
+     */
+    lazy var APPIRATER_LOCALIZED_RATE_BUTTON = NSLocalizedString("Rate %@", tableName:"AppiraterLocalizable", bundle:Appirater.instance.bundle, comment: "")
+    lazy var APPIRATER_RATE_BUTTON = String(format: APPIRATER_LOCALIZED_RATE_BUTTON, APPIRATER_APP_NAME)
 
+    /*!
+     Text for button to remind the user to review later.
+     */
+    lazy var APPIRATER_RATE_LATER = NSLocalizedString("Remind me later", tableName:"AppiraterLocalizable", bundle:Appirater.instance.bundle, comment: "")
 
-let APPIRATER_LOCALIZED_RATE_BUTTON = NSLocalizedString("Rate %@", tableName: "AppiraterLocalizable", bundle: Appirater.bundle(), comment: "")
-let APPIRATER_RATE_BUTTON = String(format: APPIRATER_LOCALIZED_RATE_BUTTON, APPIRATER_APP_NAME)
+    
+    
+    public var appId:String = ""
+    public var daysUntilPrompt:Double = 30
+    public var usesUntilPrompt:Int = 20
+    public var significantEventsUntilPrompt:Int = -1
+    public var timeBeforeReminding:Double = 1
+    public var debug:Bool = false
+    public var usesAnimation = true
+    private var statusBarStyle:UIStatusBarStyle = .default
+    private var modalOpen:Bool = false
+    public var alwaysUseMainBundle:Bool = false
+    private var eventQueue:OperationQueue?
+    
+    private var _alertTitle:String?
+    private var _alertMessage:String?
+    private var _alertCancelTitle:String?
+    private var _alertRateTitle:String?
+    private var _alertRateLaterTitle:String?
 
-/*!
- Text for button to remind the user to review later.
- */
-let APPIRATER_RATE_LATER = NSLocalizedString("Remind me later", tableName:"AppiraterLocalizable", bundle:Appirater.bundle(), comment:"")
-
-open class Appirater: NSObject, UIAlertViewDelegate, SKStoreProductViewControllerDelegate {
     
-    // MARK: - public properties
-    /*!
-     Set your Apple generated software id here.
-     */
-    public static var appId : String {
-        get {
-            return Appirater.sharedInstance._appId
-        }
+    public var alertTitle:String {
         set {
-            Appirater.sharedInstance._appId = newValue
+            _alertTitle = newValue
+        }
+        get {
+            return _alertTitle ?? APPIRATER_MESSAGE_TITLE
+        }
+    }
+    public var alertMessage:String {
+        set {
+            _alertMessage = newValue
+        }
+        get {
+            return _alertMessage ?? APPIRATER_MESSAGE
+        }
+    }
+    public var alertCancelTitle:String {
+        set {
+            _alertCancelTitle = newValue
+        }
+        get {
+            return _alertCancelTitle ?? APPIRATER_CANCEL_BUTTON
+        }
+    }
+    public var alertRateTitle:String {
+        set {
+            _alertRateTitle = newValue
+        }
+        get {
+          return _alertRateTitle ?? APPIRATER_RATE_BUTTON
+        }
+    }
+    public var alertRateLaterTitle:String {
+        set {
+            _alertRateTitle = newValue
+        }
+        get {
+           return _alertRateLaterTitle ??  APPIRATER_RATE_LATER
         }
     }
     
-    /*!
-     Users will need to have the same version of your app installed for this many
-     days before they will be prompted to rate it.
-     */
-    public static var daysUntilPrompt: Double {
-        get {
-            return Appirater.sharedInstance._daysUntilPrompt
-        }
-        set {
-            Appirater.sharedInstance._daysUntilPrompt = newValue
-        }
-    }
+    private let reachability:Reachability?
     
-    /*!
-     An example of a 'use' would be if the user launched the app. Bringing the app
-     into the foreground (on devices that support it) would also be considered
-     a 'use'. You tell Appirater about these events using the two methods:
-     [Appirater appLaunched:]
-     [Appirater appEnteredForeground:]
-     
-     Users need to 'use' the same version of the app this many times before
-     before they will be prompted to rate it.
-     */
-    public static var usesUntilPrompt: Int {
-        get {
-            return Appirater.sharedInstance._usesUntilPrompt
-        }
-        set {
-            Appirater.sharedInstance._usesUntilPrompt = newValue
-        }
-    }
+    public var ratingAlert:UIAlertController?
+    public var openInAppStore:Bool = true
+    public weak var delegate:AppiraterDelegate?
     
-    /*!
-     A significant event can be anything you want to be in your app. In a
-     telephone app, a significant event might be placing or receiving a call.
-     In a game, it might be beating a level or a boss. This is just another
-     layer of filtering that can be used to make sure that only the most
-     loyal of your users are being prompted to rate you on the app store.
-     If you leave this at a value of -1, then this won't be a criterion
-     used for rating. To tell Appirater that the user has performed
-     a significant event, call the method:
-     [Appirater userDidSignificantEvent:];
-     */
-    public static var significantEventsUntilPrompt: Int {
-        get {
-            return Appirater.sharedInstance._significantEventsUntilPrompt
-        }
-        set {
-            Appirater.sharedInstance._significantEventsUntilPrompt = newValue
-        }
-    }
-    
-    /*!
-     Once the rating alert is presented to the user, they might select
-     'Remind me later'. This value specifies how long (in days) Appirater
-     will wait before reminding them.
-     */
-    public static var timeBeforeReminding: Double {
-        get {
-            return Appirater.sharedInstance._timeBeforeReminding
-        }
-        set {
-            Appirater.sharedInstance._timeBeforeReminding = newValue
-        }
-    }
-    
-    /*!
-     Set customized title for alert view.
-     */
-    public static var customAlertTitle: String {
-        get {
-            return Appirater.sharedInstance._alertTitle != "" ? Appirater.sharedInstance._alertTitle : APPIRATER_MESSAGE_TITLE
-        }
-        set {
-            Appirater.sharedInstance._alertTitle = newValue
-        }
-    }
-    
-    /*!
-     Set customized message for alert view.
-     */
-    public static var customAlertMessage: String {
-        get {
-            return Appirater.sharedInstance._alertMessage != "" ? Appirater.sharedInstance._alertMessage : APPIRATER_MESSAGE
-        }
-        set {
-            Appirater.sharedInstance._alertMessage = newValue
-        }
-    }
-    
-    
-    /*!
-     Set customized cancel button title for alert view.
-     */
-    public static var customAlertCancelButtonTitle: String {
-        get {
-            return Appirater.sharedInstance._cancelTitle != "" ? Appirater.sharedInstance._cancelTitle : APPIRATER_CANCEL_BUTTON
-        }
-        set {
-            Appirater.sharedInstance._cancelTitle = newValue
-        }
-    }
-    
-    /*!
-     Set customized rate button title for alert view.
-     */
-    public static var customAlertRateButtonTitle: String {
-        
-        get {
-            return Appirater.sharedInstance._rateTitle != "" ? Appirater.sharedInstance._rateTitle : APPIRATER_RATE_BUTTON
-        }
-        set {
-            Appirater.sharedInstance._rateTitle = newValue
-        }
-    }
-    
-    /*!
-     Set customized rate later button title for alert view.
-     */
-    public static var customAlertRateLaterButtonTitle: String {
-        get {
-            return Appirater.sharedInstance._rateLaterTitle != "" ? Appirater.sharedInstance._rateLaterTitle : APPIRATER_RATE_LATER
-        }
-        set {
-            Appirater.sharedInstance._rateLaterTitle = newValue
-        }
-    }
-    
-    /*!
-     'YES' will show the Appirater alert everytime. Useful for testing how your message
-     looks and making sure the link to your app's review page works.
-     */
-    public static var isDebug: Bool {
-        get {
-           return Appirater.sharedInstance._debug
-        }
-        set {
-            Appirater.sharedInstance._debug = newValue
-        }
-    }
-    
-    /*!
-     Set whether or not Appirater uses animation (currently respected when pushing modal StoreKit rating VCs).
-     */
-    public static var isUsesAnimation: Bool {
-        get {
-            return Appirater.sharedInstance._usesAnimation
-        }
-        set {
-            Appirater.sharedInstance._usesAnimation = newValue
-        }
-    }
-    
-    /*!
-     If set to YES, Appirater will open App Store link (instead of SKStoreProductViewController on iOS 6). Default YES.
-     */
-    public static var isOpenInAppStore: Bool {
-        get {
-            return Appirater.sharedInstance._isOpenInAppStore
-        }
-        set {
-            Appirater.sharedInstance._isOpenInAppStore = newValue
-        }
-    }
-    
-    /*!
-     If set to YES, the main bundle will always be used to load localized strings.
-     Set this to YES if you have provided your own custom localizations in AppiraterLocalizable.strings
-     in your main bundle.  Default is NO.
-     */
-    public static var isAlwaysUseMainBundle: Bool {
-        get {
-            return Appirater.sharedInstance._alwaysUseMainBundle
-        }
-        set {
-            Appirater.sharedInstance._alwaysUseMainBundle = newValue
-        }
-    }
-    
-    /*!
-     The bundle localized strings will be loaded from.
-     */
-    class func bundle() -> Bundle {
-        var bundle: Bundle?
-        if isAlwaysUseMainBundle {
+    public lazy var bundle:Bundle = {
+        let bundle:Bundle
+        if (alwaysUseMainBundle) {
             bundle = Bundle.main
-        }
-        else {
-            var appiraterBundleURL = Bundle.main.url(forResource: "Appirater", withExtension: "bundle")
-            if (appiraterBundleURL != nil) {
+        } else {
+            let appiraterBundleURL = Bundle.main.url(forResource: "Appirater", withExtension: "bundle")
+            if let appiraterBundleURL {
                 // Appirater.bundle will likely only exist when used via CocoaPods
-                bundle = Bundle(url:appiraterBundleURL!)
+                bundle = Bundle(url: appiraterBundleURL)!
             } else {
                 bundle = Bundle.main
             }
         }
-        return bundle!
-    }
-
-    class func setStatusBarStyle(_ style: UIStatusBarStyle) {
-        Appirater.sharedInstance._statusBarStyle = style
-    }
-
-    class func setModalOpen(_ open: Bool) {
-        Appirater.sharedInstance._modalOpen = open
-    }
-
-    // MARK: private properties
-    private var _appId: String = ""
-    private var _daysUntilPrompt: Double = 30
-    private var _usesUntilPrompt = 20
-    private var _significantEventsUntilPrompt = -1
-    private var _timeBeforeReminding: Double = 1
-    private var _alertTitle: String = ""
-    private var _alertMessage: String = ""
-    private var _cancelTitle: String = ""
-    private var _rateTitle: String = ""
-    private var _rateLaterTitle: String = ""
-    private var _debug = false
-    private var _usesAnimation = true
-    private var _isOpenInAppStore = false
-    private var _alwaysUseMainBundle = false
-    private var _statusBarStyle = UIStatusBarStyle(rawValue: 0)
-    private var _modalOpen = false
+        return bundle;
+    }()
     
+    public static let instance = Appirater()
     
-    var ratingAlert: UIAlertView!
-    var eventQueue = OperationQueue()
-
-    /*!
-     Set the delegate if you want to know when Appirater does something
-     */
-    private weak var _delegate: AppiraterDelegate?
-
-    
-    // MARK: life cycle and singletone
-    static var sharedInstance = Appirater()
-    
-    override init() {
+    private override init() {
+        reachability = try? Reachability(hostname: "https://www.apple.com")
+        try? reachability?.startNotifier()
+        eventQueue = OperationQueue()
+        eventQueue!.maxConcurrentOperationCount = 1
         super.init()
-        
-        if Double(UIDevice.current.systemVersion)! >= 7.0 {
-            self._isOpenInAppStore = true
-        }
-        else {
-            self._isOpenInAppStore = false
-        }
-        
-        self.eventQueue.maxConcurrentOperationCount = 1
-        NotificationCenter.default.addObserver(self, selector: #selector(appWillResignActive), name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: nil)
     }
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
-    // TODO:
-    // MARK: - Alert customization
-/*
-    override func alertTitle() -> String {
-        return alertTitle ? alertTitle : APPIRATER_MESSAGE_TITLE
-    }
-    
-    func alertMessage() -> String {
-        return alertMessage ? alertMessage : APPIRATER_MESSAGE
-    }
-    
-    func alertCancelTitle() -> String {
-        return alertCancelTitle ? alertCancelTitle : APPIRATER_CANCEL_BUTTON
-    }
-    
-    func alertRateTitle() -> String {
-        return alertRateTitle ? alertRateTitle : APPIRATER_RATE_BUTTON
-    }
-    
-    func alertRateLaterTitle() -> String {
-        return alertRateLaterTitle ? alertRateLaterTitle : APPIRATER_RATE_LATER
-    }
-*/
-    
-    func showRatingAlert(_ displayRateLaterButton: Bool) {
-        var alertView: UIAlertView? = nil
-        if let delegate = self._delegate {
-            if !delegate.appiraterShouldDisplayAlert(self) {
-                return
-            }
-            
-            delegate.appiraterDidDisplayAlert(self)
+
+    @objc func appWillResignActive(_ notification:Notification) {
+        if debug {
+            print("APPIRATER appWillResignActive")
         }
-        
-        if displayRateLaterButton {
-            alertView = UIAlertView(title: Appirater.customAlertTitle, message: Appirater.customAlertMessage, delegate: self, cancelButtonTitle: Appirater.customAlertCancelButtonTitle, otherButtonTitles: Appirater.customAlertRateButtonTitle, Appirater.customAlertRateLaterButtonTitle)
-        }
-        else {
-            alertView = UIAlertView(title: Appirater.customAlertTitle, message: Appirater.customAlertMessage, delegate: self, cancelButtonTitle: Appirater.customAlertCancelButtonTitle, otherButtonTitles: Appirater.customAlertRateButtonTitle)
-        }
-        self.ratingAlert = alertView
-        alertView!.show()
+        self.hideRatingAlert()
     }
+    
+    func connectedToNetwork() -> Bool {
+        guard reachability != nil else {
+            return false
+        }
+        return reachability?.connection != .unavailable
+    }
+}
+
+extension Appirater {
+    
+    func templateReviewURLForApp(_ appId:String) -> String {
+        return "itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=\(appId)"
+    }
+    
+    func templateReviewURLiOS7(_ appId:String) -> String {
+        return "itms-apps://itms-apps://itunes.apple.com/app/\(appId)"
+    }
+    
+    func templateReviewURLiOS8(_ appId:String) -> String {
+        return "itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?id=\(appId)&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software"
+    }
+}
+
+import StoreKit
+extension Appirater {
+    
+    func showRatingAlert(_ displayRateLaterButton:Bool) {
+        if !(delegate?.appiraterShouldDisplayAlert(self) ?? false) {
+            return
+        }
+        self.rateApp()
+        delegate?.appiraterDidDisplayAlert(self)
+     }
     
     func showRatingAlert() {
         self.showRatingAlert(true)
     }
     
-    public func productViewControllerDidFinish(_ viewController: SKStoreProductViewController) {
-        self.closeModal()
-    }
-    
-    // is this an ok time to show the alert? (regardless of whether the rating conditions have been met)
-    //
-    // things checked here:
-    // * connectivity with network
-    // * whether user has rated before
-    // * whether user has declined to rate
-    // * whether rating alert is currently showing visibly
-    // things NOT checked here:
-    // * time since first launch
-    // * number of uses of app
-    // * number of significant events
-    // * time since last reminder
     func ratingAlertIsAppropriate() -> Bool {
-                
-        return (Reachability.isConnectedToNetwork() && !self.userHasDeclinedToRate() && !self.ratingAlert.isVisible && !self.userHasRatedCurrentVersion())
+        return self.connectedToNetwork()
+                && !self.userHasDeclinedToRate()
+                && !self.isRatingAlertVisible()
+                && !self.userHasRatedCurrentVersion()
     }
     
-    
-    // have the rating conditions been met/earned? (regardless of whether this would be a moment when it's appropriate to show a new rating alert)
-    //
-    // things checked here:
-    // * time since first launch
-    // * number of uses of app
-    // * number of significant events
-    // * time since last reminder
-    // things NOT checked here:
-    // * connectivity with network
-    // * whether user has rated before
-    // * whether user has declined to rate
-    // * whether rating alert is currently showing visibly
     func ratingConditionsHaveBeenMet() -> Bool {
-        if Appirater.sharedInstance._debug {
+        guard !debug else {
             return true
         }
-        var userDefaults = UserDefaults.standard
-        var dateOfFirstLaunch = Date(timeIntervalSince1970: userDefaults.double(forKey: kAppiraterFirstUseDate))
-        var timeSinceFirstLaunch = Date().timeIntervalSince(dateOfFirstLaunch)
-        var timeUntilRate = 60 * 60 * 24 * Appirater.daysUntilPrompt
+        
+        let userDefaults = UserDefaults.standard
+        let dateOfFirstLaunch = Date(timeIntervalSince1970: userDefaults.double(forKey: kAppiraterFirstUseDate))
+        let timeSinceFirstLaunch = Date().timeIntervalSince(dateOfFirstLaunch)
+        let timeUntilRate = 60 * 60 * 24 * daysUntilPrompt
         if timeSinceFirstLaunch < timeUntilRate {
             return false
         }
         // check if the app has been used enough
-        var useCount = userDefaults.integer(forKey: kAppiraterUseCount)
-        if useCount < Appirater.usesUntilPrompt {
+        let useCount = userDefaults.integer(forKey: kAppiraterUseCount)
+        if useCount < usesUntilPrompt {
             return false
         }
         // check if the user has done enough significant events
-        var sigEventCount = userDefaults.integer(forKey: kAppiraterSignificantEventCount)
-        if sigEventCount < Appirater.significantEventsUntilPrompt {
+        let sigEventCount = userDefaults.integer(forKey:kAppiraterSignificantEventCount)
+        if sigEventCount < significantEventsUntilPrompt {
             return false
         }
         
         // if the user wanted to be reminded later, has enough time passed?
-        var reminderRequestDate = Date(timeIntervalSince1970: userDefaults.double(forKey: kAppiraterReminderRequestDate))
-        var timeSinceReminderRequest = Date().timeIntervalSince(reminderRequestDate)
-        var timeUntilReminder = 60 * 60 * 24 * Appirater.timeBeforeReminding
+        let reminderRequestDate = Date.init(timeIntervalSince1970: userDefaults.double(forKey: kAppiraterReminderRequestDate))
+        let timeSinceReminderRequest = Date().timeIntervalSince(reminderRequestDate)
+        let timeUntilReminder = 60 * 60 * 24 * timeBeforeReminding
         if timeSinceReminderRequest < timeUntilReminder {
             return false
         }
-        return true
+        return false
     }
     
     func incrementUseCount() {
         // get the app's version
-        var version = (Bundle.main.infoDictionary![(kCFBundleVersionKey as! String)] as! String)
+        let version =  Bundle.main.infoDictionary!["CFBundleVersion"] as! String
         // get the version number that we've been tracking
-        var userDefaults = UserDefaults.standard
-        var trackingVersion = userDefaults.string(forKey: kAppiraterCurrentVersion)!
-        if trackingVersion == nil {
-            trackingVersion = version
-            userDefaults.set(version, forKey: kAppiraterCurrentVersion)
+        let userDefaults = UserDefaults.standard
+        var trackingVersion = userDefaults.string(forKey: kAppiraterCurrentVersion)
+        if trackingVersion == nil
+        {
+            trackingVersion = version;
+            userDefaults.setValue(version, forKey: kAppiraterCurrentVersion)
         }
-        if Appirater.sharedInstance._debug {
-            print("APPIRATER Tracking version: \(trackingVersion)")
+        
+        if debug {
+            print("APPIRATER Tracking version: \(trackingVersion ?? "")");
         }
-
-        if (trackingVersion == version) {
+        
+        if trackingVersion == version {
             // check if the first use date has been set. if not, set it.
             var timeInterval = userDefaults.double(forKey: kAppiraterFirstUseDate)
             if timeInterval == 0 {
                 timeInterval = Date().timeIntervalSince1970
                 userDefaults.set(timeInterval, forKey: kAppiraterFirstUseDate)
             }
+            
             // increment the use count
-            var useCount = userDefaults.integer(forKey: kAppiraterUseCount)
-            useCount += 1
-            userDefaults.set(useCount, forKey: kAppiraterUseCount)
-            if Appirater.sharedInstance._debug {
+            let useCount = userDefaults.integer(forKey: kAppiraterUseCount) + 1
+            userDefaults.setValue(useCount, forKey: kAppiraterUseCount)
+            if debug {
                 print("APPIRATER Use count: \(useCount)")
             }
-        } else {
-            userDefaults.set(version, forKey: kAppiraterCurrentVersion)
-            userDefaults.set(Date().timeIntervalSince1970, forKey: kAppiraterFirstUseDate)
-            userDefaults.set(1, forKey: kAppiraterUseCount)
-            userDefaults.set(0, forKey: kAppiraterSignificantEventCount)
-            userDefaults.set(false, forKey: kAppiraterRatedCurrentVersion)
-            userDefaults.set(false, forKey: kAppiraterDeclinedToRate)
-            userDefaults.set(0, forKey: kAppiraterReminderRequestDate)
         }
-        
+        else
+        {
+            // it's a new version of the app, so restart tracking
+            userDefaults.setValue(version, forKey: kAppiraterCurrentVersion)
+            userDefaults.setValue(Date().timeIntervalSince1970, forKey: kAppiraterFirstUseDate)
+            userDefaults.setValue(1, forKey: kAppiraterUseCount)
+            userDefaults.setValue(0, forKey: kAppiraterSignificantEventCount)
+            userDefaults.setValue(false, forKey: kAppiraterRatedCurrentVersion)
+            userDefaults.setValue(false, forKey: kAppiraterDeclinedToRate)
+            userDefaults.setValue(Double(0), forKey: kAppiraterReminderRequestDate)
+        }
         userDefaults.synchronize()
     }
     
     func incrementSignificantEventCount() {
         // get the app's version
-        var version = (Bundle.main.infoDictionary![(kCFBundleVersionKey as! String)] as! String)
+        let version =  Bundle.main.infoDictionary!["CFBundleVersion"] as! String
         // get the version number that we've been tracking
-        var userDefaults = UserDefaults.standard
+        let userDefaults = UserDefaults.standard
         var trackingVersion = userDefaults.string(forKey: kAppiraterCurrentVersion)
-        if trackingVersion == nil {
-            trackingVersion = version
-            userDefaults.set(version, forKey: kAppiraterCurrentVersion)
-        }
-        if Appirater.sharedInstance._debug {
-            print("APPIRATER Tracking version: \(trackingVersion)")
+        if trackingVersion == nil
+        {
+            trackingVersion = version;
+            userDefaults.setValue(version, forKey: kAppiraterCurrentVersion)
         }
         
-        if (trackingVersion == version) {
+        if debug {
+            print("APPIRATER Tracking version: \(trackingVersion ?? "")");
+        }
+        
+        if trackingVersion == version {
             // check if the first use date has been set. if not, set it.
             var timeInterval = userDefaults.double(forKey: kAppiraterFirstUseDate)
             if timeInterval == 0 {
                 timeInterval = Date().timeIntervalSince1970
                 userDefaults.set(timeInterval, forKey: kAppiraterFirstUseDate)
             }
+            
             // increment the significant event count
-            var sigEventCount = userDefaults.integer(forKey: kAppiraterSignificantEventCount)
-            sigEventCount += 1
-            userDefaults.set(sigEventCount, forKey: kAppiraterSignificantEventCount)
-            if Appirater.sharedInstance._debug {
-                print("APPIRATER Significant event count: \(sigEventCount)")
+            let sigEventCount = userDefaults.integer(forKey: kAppiraterSignificantEventCount) + 1
+            userDefaults.setValue(sigEventCount, forKey: kAppiraterSignificantEventCount)
+            if debug {
+                print("APPIRATER Significant event count: \(sigEventCount)");
             }
-        } else {
-            // it's a new version of the app, so restart tracking
-            userDefaults.set(version, forKey: kAppiraterCurrentVersion)
-            userDefaults.set(0, forKey: kAppiraterFirstUseDate)
-            userDefaults.set(0, forKey: kAppiraterUseCount)
-            userDefaults.set(1, forKey: kAppiraterSignificantEventCount)
-            userDefaults.set(false, forKey: kAppiraterRatedCurrentVersion)
-            userDefaults.set(false, forKey: kAppiraterDeclinedToRate)
-            userDefaults.set(0, forKey: kAppiraterReminderRequestDate)
         }
-
+        else
+        {
+            // it's a new version of the app, so restart tracking
+            userDefaults.setValue(version, forKey: kAppiraterCurrentVersion)
+            userDefaults.setValue(Date().timeIntervalSince1970, forKey: kAppiraterFirstUseDate)
+            userDefaults.setValue(0, forKey: kAppiraterUseCount)
+            userDefaults.setValue(1, forKey: kAppiraterSignificantEventCount)
+            userDefaults.setValue(false, forKey: kAppiraterRatedCurrentVersion)
+            userDefaults.setValue(false, forKey: kAppiraterDeclinedToRate)
+            userDefaults.setValue(Double(0), forKey: kAppiraterReminderRequestDate)
+        }
         userDefaults.synchronize()
     }
     
-    func incrementAndRate(_ canPromptForRating: Bool) {
+    func incrementAndRate(_ canPromptForRating:Bool) {
         self.incrementUseCount()
-        if canPromptForRating && self.ratingConditionsHaveBeenMet() && self.ratingAlertIsAppropriate() {
-            DispatchQueue.main.async(execute: {() -> Void in
+        if canPromptForRating
+            && self.ratingConditionsHaveBeenMet()
+            && self.ratingAlertIsAppropriate()
+        {
+            DispatchQueue.main.async {
                 self.showRatingAlert()
-            })
+            }
         }
     }
     
-    func incrementSignificantEventAndRate(_ canPromptForRating: Bool) {
+    func incrementSignificantEventAndRate(_ canPromptForRating:Bool) {
         self.incrementSignificantEventCount()
-        if canPromptForRating && self.ratingConditionsHaveBeenMet() && self.ratingAlertIsAppropriate() {
-            DispatchQueue.main.async(execute: {() -> Void in
+        if canPromptForRating
+            && self.ratingConditionsHaveBeenMet()
+            && self.ratingAlertIsAppropriate()
+        {
+            DispatchQueue.main.async {
                 self.showRatingAlert()
-            })
+            }
         }
     }
     
-    /*!
-     Asks Appirater if the user has declined to rate;
-     */
-    func userHasDeclinedToRate() -> Bool {
+    public func userHasDeclinedToRate() -> Bool {
         return UserDefaults.standard.bool(forKey: kAppiraterDeclinedToRate)
     }
     
-    /*!
-     Asks Appirater if the user has rated the current version.
-     Note that this is not a guarantee that the user has actually rated the app in the
-     app store, but they've just clicked the rate button on the Appirater dialog.
-     */
-    func userHasRatedCurrentVersion() -> Bool {
+    public func userHasRatedCurrentVersion()  -> Bool {
         return UserDefaults.standard.bool(forKey: kAppiraterRatedCurrentVersion)
     }
     
-    open class func appLaunched() {
-        Appirater.appLaunched(true)
+    func appLaunched(){
+        self.appLaunched(true)
+    }
+    
+    public func appLaunched(_ canPromptForRating:Bool) {
+        DispatchQueue.global().async {
+            let appirater = Appirater.instance
+            if appirater.debug {
+                appirater.showRatingAlert()
+            } else {
+                appirater.incrementAndRate(canPromptForRating)
+            }
+        }
+    }
+    
+    func isRatingAlertVisible() -> Bool {
+        return self.ratingAlert?.view.superview != nil
     }
     
     func hideRatingAlert() {
-        if self.ratingAlert.isVisible {
-            if Appirater.sharedInstance._debug {
-                print("APPIRATER Hiding Alert")
+        if self.isRatingAlertVisible() {
+            if debug {
+                print("APPIRATER Hiding Alert");
             }
-            self.ratingAlert.dismiss(withClickedButtonIndex: -1, animated: false)
+            self.ratingAlert?.dismiss(animated: true)
         }
     }
     
-    /*!
-     Tells Appirater that the app has launched, and on devices that do NOT
-     support multitasking, the 'uses' count will be incremented. You should
-     call this method at the end of your application delegate's
-     application:didFinishLaunchingWithOptions: method.
-     
-     If the app has been used enough to be rated (and enough significant events),
-     you can suppress the rating alert
-     by passing NO for canPromptForRating. The rating alert will simply be postponed
-     until it is called again with YES for canPromptForRating. The rating alert
-     can also be triggered by appEnteredForeground: and userDidSignificantEvent:
-     (as long as you pass YES for canPromptForRating in those methods).
-     */
-    open class func appLaunched(_ canPromptForRating: Bool) {
-        DispatchQueue.global(qos: .default).async(execute: {() -> Void in
-            var a = Appirater.sharedInstance
-            if a._debug {
-                DispatchQueue.main.async(execute: {() -> Void in
-                    a.showRatingAlert()
-                })
-            }
-            else {
-                a.incrementAndRate(canPromptForRating)
-            }
+   func appWillResignActive() {
+       if debug {
+           print("APPIRATER appWillResignActive");
+       }
+       Appirater.instance.hideRatingAlert()
+    }
+    
+    public func appEnteredForeground(_ canPromptForRating:Bool) {
+        eventQueue?.addOperation({
+            Appirater.instance.incrementAndRate(canPromptForRating)
         })
     }
     
-    
-    @objc func appWillResignActive() {
-        if Appirater.sharedInstance._debug {
-            print("APPIRATER appWillResignActive")
-        }
-        Appirater.sharedInstance.hideRatingAlert()
+    public func userDidSignificantEvent(_ canPromptForRating:Bool) {
+        eventQueue?.addOperation({
+            Appirater.instance.incrementSignificantEventAndRate(canPromptForRating)
+        })
     }
     
-    class func showPrompt() {
-        Appirater.tryToShowPrompt()
+    func showPrompt() {
+        self.tryToShowPrompt()
     }
     
-    func showPrompt(withChecks: Bool, displayRateLaterButton: Bool) {
+    public func tryToShowPrompt() {
+        self.showPromptWithChecks(true, displayRateLaterButton:true)
+    }
+    
+    public func forceShowPrompt(_ displayRateLaterButton:Bool) {
+        self.showPromptWithChecks(false, displayRateLaterButton:displayRateLaterButton)
+    }
+    
+    func showPromptWithChecks(_ withChecks:Bool, displayRateLaterButton:Bool) {
         if withChecks == false || self.ratingAlertIsAppropriate() {
             self.showRatingAlert(displayRateLaterButton)
         }
     }
     
-    class func getRootViewController() -> UIViewController? {
-        var window = UIApplication.shared.keyWindow!
-        if window.windowLevel != UIWindow.Level.normal {
-            var windows = UIApplication.shared.windows
+    func getRootViewController() -> UIViewController? {
+        let window = UIApplication.shared.windows.first
+        if let window, window.windowLevel != .normal {
+            let windows = UIApplication.shared.windows
             for window in windows {
-                if window.windowLevel == UIWindow.Level.normal {
+                if window.windowLevel == .normal {
                     break
                 }
             }
         }
-        return Appirater.iterateSubViews(forViewController: window)
+        
+        return self.iterateSubViewsForViewController(window)
     }
     
-    class func iterateSubViews(forViewController parentView: UIView) -> UIViewController? {
-        for subView: UIView in parentView.subviews {
-            var responder = subView.next!
-            if (responder is UIViewController) {
-                return self.topMostViewController((responder as! UIViewController))
+    func iterateSubViewsForViewController(_ parentView:UIView?) -> UIViewController?  {
+        for subView in (parentView?.subviews ?? []) {
+            let responder = subView.next
+            if let vc = responder as? UIViewController {
+                return self.topMostViewController(vc)
             }
-            var found = Appirater.iterateSubViews(forViewController: subView)
-            if nil != found {
+            let found = self.iterateSubViewsForViewController(subView)
+            if found != nil {
                 return found
             }
         }
         return nil
     }
     
-    class func topMostViewController(_ controller: UIViewController) -> UIViewController {
-        var topController = controller
+    func topMostViewController(_ vc:UIViewController?) -> UIViewController?  {
+        var newVc = vc
         var isPresenting = false
-        repeat {
+        while isPresenting {
             // this path is called only on iOS 6+, so -presentedViewController is fine here.
-            var presented = controller.presentedViewController
-            isPresenting = presented != nil
-            if presented != nil {
-                topController = presented!
+            let presented = newVc?.presentedViewController
+            isPresenting = presented != nil;
+            if(presented != nil) {
+                newVc = presented
             }
-        } while isPresenting
-        return topController
-    }
-    
-    public func alertView(_ alertView: UIAlertView, didDismissWithButtonIndex buttonIndex: Int) {
-        var userDefaults = UserDefaults.standard
-        var delegate = self._delegate
-        switch buttonIndex {
-            
-        case 0:
-            // they don't want to rate it
-            userDefaults.set(true, forKey: kAppiraterDeclinedToRate)
-            userDefaults.synchronize()
-            delegate?.appiraterDidDecline(toRate: self)
-            
-        case 1:
-            // they want to rate it
-            Appirater.rateApp()
-            delegate?.appiraterDidOpt(toRate: self)
-            
-        case 2:
-            // remind them later
-            userDefaults.set(Date().timeIntervalSince1970, forKey: kAppiraterReminderRequestDate)
-            
-        default:
-            userDefaults.set(true, forKey: kAppiraterDeclinedToRate)
-            userDefaults.synchronize()
-            delegate?.appiraterDidDecline(toRate: self)
         }
+        return newVc
     }
     
-    /*!
-     Tells Appirater that the app was brought to the foreground on multitasking
-     devices. You should call this method from the application delegate's
-     applicationWillEnterForeground: method.
-     
-     If the app has been used enough to be rated (and enough significant events),
-     you can suppress the rating alert
-     by passing NO for canPromptForRating. The rating alert will simply be postponed
-     until it is called again with YES for canPromptForRating. The rating alert
-     can also be triggered by appLaunched: and userDidSignificantEvent:
-     (as long as you pass YES for canPromptForRating in those methods).
-     */
-    open class func appEnteredForeground(_ canPromptForRating: Bool) {
-        var a = Appirater.sharedInstance
-        a.eventQueue.addOperation {() -> Void in
-            Appirater.sharedInstance.incrementAndRate(canPromptForRating)
-        }
-    }
-    
-    /*!
-     Tells Appirater that the user performed a significant event. A significant
-     event is whatever you want it to be. If you're app is used to make VoIP
-     calls, then you might want to call this method whenever the user places
-     a call. If it's a game, you might want to call this whenever the user
-     beats a level boss.
-     
-     If the user has performed enough significant events and used the app enough,
-     you can suppress the rating alert by passing NO for canPromptForRating. The
-     rating alert will simply be postponed until it is called again with YES for
-     canPromptForRating. The rating alert can also be triggered by appLaunched:
-     and appEnteredForeground: (as long as you pass YES for canPromptForRating
-     in those methods).
-     */
-    open class func userDidSignificantEvent(_ canPromptForRating: Bool) {
-        var a = Appirater.sharedInstance
-        a.eventQueue.addOperation {() -> Void in
-            Appirater.sharedInstance.incrementSignificantEventAndRate(canPromptForRating)
-        }
-    }
-    
-    /*!
-     Tells Appirater to try and show the prompt (a rating alert). The prompt will be showed
-     if there is connection available, the user hasn't declined to rate
-     or hasn't rated current version.
-     
-     You could call to show the prompt regardless Appirater settings,
-     e.g., in case of some special event in your app.
-     */
-    class func tryToShowPrompt() {
-        Appirater.sharedInstance.showPrompt(withChecks: true, displayRateLaterButton: true)
-    }
-    
-    /*!
-     Tells Appirater to show the prompt (a rating alert).
-     Similar to tryToShowPrompt, but without checks (the prompt is always displayed).
-     Passing false will hide the rate later button on the prompt.
-     
-     The only case where you should call this is if your app has an
-     explicit "Rate this app" command somewhere. This is similar to rateApp,
-     but instead of jumping to the review directly, an intermediary prompt is displayed.
-     */
-    class func forceShowPrompt(_ displayRateLaterButton: Bool) {
-        Appirater.sharedInstance.showPrompt(withChecks: false, displayRateLaterButton: displayRateLaterButton)
-    }
-    
-    /*!
-     Tells Appirater to open the App Store page where the user can specify a
-     rating for the app. Also records the fact that this has happened, so the
-     user won't be prompted again to rate the app.
-     The only case where you should call this directly is if your app has an
-     explicit "Rate this app" command somewhere.  In all other cases, don't worry
-     about calling this -- instead, just call the other functions listed above,
-     and let Appirater handle the bookkeeping of deciding when to ask the user
-     whether to rate the app.
-     */
-    class func rateApp() {
-        var userDefaults = UserDefaults.standard
-        userDefaults.set(true, forKey: kAppiraterRatedCurrentVersion)
+    public func rateApp() {
+        let userDefaults = UserDefaults.standard
+        userDefaults.setValue(true, forKey: kAppiraterRatedCurrentVersion)
         userDefaults.synchronize()
-        //Use the in-app StoreKit view if available (iOS 6) and imported. This works in the simulator.
-        if !Appirater.sharedInstance._isOpenInAppStore && NSStringFromClass(SKStoreProductViewController.self) != nil {
-            var storeViewController = SKStoreProductViewController()
-            var appId = Int(self.appId)
-            storeViewController.loadProduct(withParameters: [SKStoreProductParameterITunesItemIdentifier: appId], completionBlock: nil)
-            storeViewController.delegate = self.sharedInstance
-            var delegate = self.sharedInstance._delegate
-            
-            delegate?.appiraterWillPresentModalView(self.sharedInstance, animated: Appirater.sharedInstance._usesAnimation)
-            
-            self.getRootViewController()?.present(storeViewController, animated: self.sharedInstance._usesAnimation, completion: {() -> Void in
-                self.sharedInstance._modalOpen = true
-            })
-        } else {
-            
-            #if TARGET_IPHONE_SIMULATOR
-                print("APPIRATER NOTE: iTunes App Store is not supported on the iOS simulator. Unable to open App Store page.")
-            #else
-                var reviewURL = templateReviewURL.replacingOccurrences(of: "APP_ID", with: "\(appId)")
-                // iOS 7 needs a different templateReviewURL @see https://github.com/arashpayan/appirater/issues/131
-                // Fixes condition @see https://github.com/arashpayan/appirater/issues/205
-                if Double(UIDevice.current.systemVersion)! >= 7.0 && Double(UIDevice.current.systemVersion)! < 8.0 {
-                    reviewURL = templateReviewURLiOS7.replacingOccurrences(of: "APP_ID", with: "\(appId)")
-                }
-                else if Double(UIDevice.current.systemVersion)! >= 8.0 {
-                    reviewURL = templateReviewURLiOS8.replacingOccurrences(of: "APP_ID", with: "\(appId)")
-                }
-                
-                UIApplication.shared.openURL(URL(string: reviewURL)!)
-            #endif
-        }
-
-    }
-    
-    /*!
-     Tells Appirater to immediately close any open rating modals (e.g. StoreKit rating VCs).
-     */
-    func closeModal() {
-        if _modalOpen {
-            var usedAnimation = _usesAnimation
-            self._modalOpen = false
-            // get the top most controller (= the StoreKit Controller) and dismiss it
-            var presentingController = UIApplication.shared.keyWindow!.rootViewController!
-            presentingController = Appirater.topMostViewController(presentingController)
-            presentingController.dismiss(animated: _usesAnimation, completion: {() -> Void in
-                if let delegate = Appirater.sharedInstance._delegate {
-                    delegate.appiraterDidDismissModalView((self as! Appirater), animated: usedAnimation)
-                }
-            })
-            self._statusBarStyle = .none
-        }
+        SKStoreReviewController.requestReview()
     }
 }
 
-
+extension Appirater : SKStoreProductViewControllerDelegate {
+    
+    public func productViewControllerDidFinish(_ viewController: SKStoreProductViewController) {
+        self.closeModal()
+    }
+    
+    
+    //Close the in-app rating (StoreKit) view and restore the previous status bar style.
+    public func closeModal() {
+        if modalOpen {
+            self.modalOpen = false
+            // get the top most controller (= the StoreKit Controller) and dismiss it
+            var presentingController =  UIApplication.shared.windows.first(where: { $0.isKeyWindow })?.rootViewController
+            presentingController = self.topMostViewController(presentingController)
+            presentingController?.dismiss(animated: usesAnimation) {
+                self.delegate?.appiraterDidDismissModalView(self, animated: self.usesAnimation)
+            }
+        }
+    }
+}
